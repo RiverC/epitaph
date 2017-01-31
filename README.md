@@ -24,7 +24,7 @@ The content inside of the src/epitaph .cljs files are the heart of the game whic
 
 However modifying these files isn't sufficent to effect those changes, they need to be compiled into javascript which is what the game actually runs.
 
-To do this you need to download and install [Leiningen with Java SE 7 JDK](https://djpowell.github.io/leiningen-win-installer/)
+To do this you need to download and install [Leiningen with Java SE 7 JDK](https://djpowell.github.io/leiningen-win-installer/) (assuming you're on windows) otherwise go [here](https://github.com/technomancy/leiningen)
 
 Then put the entirety of the Epitaph master files inside the .lein/bin directory
 
