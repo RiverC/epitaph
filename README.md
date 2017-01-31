@@ -20,15 +20,15 @@ From an implementation perspective, Epitaph is interesting mainly because it's a
 
 ## Modding Epitaph
 
-The content inside of the src/epitaph .cljs files are the heart of the game which are easy enough to follow, understand and modify.
-However modifying these files isn't sufficent to effect those changes, they need to be compiled into javascript which is what the game actually runs.
-To do this you need to download [Leiningen and Java SE 7 JDK](https://djpowell.github.io/leiningen-win-installer/)
-Then put the entirety of the Epitaph master files inside the .lein/bin directory
-To compile your changes, open CMD, navigate to your Epitaph folder, type:
+*The content inside of the src/epitaph .cljs files are the heart of the game which are easy enough to follow, understand and modify.
+*However modifying these files isn't sufficent to effect those changes, they need to be compiled into javascript which is what the game actually runs.
+*To do this you need to download [Leiningen and Java SE 7 JDK](https://djpowell.github.io/leiningen-win-installer/)
+*Then put the entirety of the Epitaph master files inside the .lein/bin directory
+*To compile your changes, open CMD, navigate to your Epitaph folder, type:
 
 lein cljsbuild once
 
-This will take some time and should create a folder named target containing among other things a file called app.js
-app.js is very important, it's one of the few files that the game needs in order to run and the location of your changes.
-From here you can run your modded game on your machine by opening index.html
-Alternatively you can share your modded game on github by switching out the app.js file in the target folder in the gh-pages branch for your own.
+*This will take some time and should create a folder named target containing among other things a file called app.js
+*app.js is very important, it's one of the few files that the game needs in order to run and the location of your changes.
+*From here you can run your modded game on your machine by opening index.html
+*Alternatively you can share your modded game on github by switching out the app.js file in the target folder in the gh-pages branch for your own.
