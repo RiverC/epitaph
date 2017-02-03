@@ -20,7 +20,10 @@
   (let [stardate (+ 2200 (rand-int 700))]
     (atom {:civs [(gen-civ stardate)]
            :stardate stardate
-           :sound-on? true})))
+           :sound-on? true
+           :pause? false
+           :wait? false
+           :rate 1000})))
 
 (defn play-notification-sound! [pitch]
   (when (:sound-on? @app-state)
@@ -42,9 +45,40 @@
         (when (seq civs-with-new-events)
           (rand-nth (mapv :notification-pitch civs-with-new-events))))))
 
+;; test for each civ in the collection
+(defn can-not-take-action [civ]
+    (let [date (:stardate @app-state)
+          date-allowed-to-intervene (+ (:last-intervened civ) 30)]
+        (< date date-allowed-to-intervene)
+    )
+)
+
+;; determine if we can take action this year 
+(defn can-take-no-actions [civs]
+    (every? can-not-take-action civs)
+)
+
+;; test to see if we do a tick. 
+;; 
+(defn can-tick [state]
+    (if (:pause? state) 
+        false
+        (if (:wait? state)            
+            (if (can-take-no-actions (:civs state))
+                true
+                false
+            ) 
+            true
+        )
+    )    
+)
+
 (defn tick []
   (om/transact! (om/root-cursor app-state)
     (fn [state]
+      ;; will pause if pause is on, or if wait is on and we have soemthing to do
+      ;; note that pause does not prevent action right now
+      (if (can-tick state)
       (let [new-stardate (inc (:stardate state))
             civs (mapv #(civ-tick % new-stardate) (:civs state))
             ;; new civs more likely to spawn if all existing civs are "finished"
@@ -53,7 +87,9 @@
                               (conj (gen-civ new-stardate)))]
         (when-let [pitch (get-notification-pitch (:civs state) civs)]
           (play-notification-sound! pitch))
-        (assoc state :civs civs :stardate new-stardate)))))
+        (assoc state :civs civs :stardate new-stardate))
+      state
+))))
 
 (defcomponent event-view [data owner]
   (render [_]
@@ -119,6 +155,14 @@
       (dom/div {:class "top-bar"}
         (dom/p {} (str "Stardate " (:stardate data)))
         (dom/div {:class "right"}
+          (dom/a {:class "right-control"
+                  :on-click #(om/transact! data :wait? not)}
+                    (if (:wait? data) "Wait" "Don't Wait")
+                )
+          (dom/a {:class "right-control"
+                  :on-click #(om/transact! data :pause? not)}
+                    (if (:pause? data) "Paused" "Unpaused")
+                )
           (dom/a {:class (if (:sound-on? data) "icon-sound-on" "icon-sound-off")
                   :on-click #(om/transact! data :sound-on? not)})))
       (dom/div {:class "civs"}
